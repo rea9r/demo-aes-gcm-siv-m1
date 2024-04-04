@@ -16,11 +16,22 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit test framework.
-    testImplementation libs.junit
+    // Tink
+    implementation 'com.google.crypto.tink:tink:1.12.0'
+    def isMacOS = System.getProperty("os.name").startsWith("Mac OS X")
+    def architecture = System.getProperty("os.arch").toLowerCase()
+    if ("$isMacOS" && "$architecture" == "aarch64") {
+        // Conscript は ARM based Mac 用のアーティファクトを提供していないため、自前でビルドしたものを利用する
+        // @see https://github.com/google/conscrypt/issues/1034
+        println("=== Conscrypt OpenJDK for Apple M1")
+        implementation files('libs/conscrypt-openjdk-2.6-SNAPSHOT-osx-aarch_64.jar')
+    } else {
+        implementation 'org.conscrypt:conscrypt-openjdk-uber:2.5.2'
+    }
 
-    // This dependency is used by the application.
-    implementation libs.guava
+    // Use JUnit test framework.
+    testImplementation libs.junitJupiterApi
+    testRuntimeOnly libs.junitJupiterEngine
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -30,7 +41,10 @@ java {
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 application {
-    // Define the main class for the application.
-    mainClass = 'org.example.App'
+    mainModule = 'org.example'
 }
