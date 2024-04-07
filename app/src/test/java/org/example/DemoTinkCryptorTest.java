@@ -56,9 +56,10 @@ class DemoTinkCryptorTest {
         Security.addProvider(Conscrypt.newProvider());
         AeadConfig.register();
 
-        KeysetHandle keysetHandle = KeysetHandle.generateNew(AesGcmSivKeyManager.aes256GcmSivTemplate());
-        String serializedKeyset = TinkJsonProtoKeysetFormat.serializeKeyset(keysetHandle,
-                                                                            InsecureSecretKeyAccess.get());
+        KeysetHandle keysetHandle = KeysetHandle.generateNew(
+                AesGcmSivKeyManager.aes256GcmSivTemplate());
+        String serializedKeyset = TinkJsonProtoKeysetFormat.serializeKeyset(
+                keysetHandle, InsecureSecretKeyAccess.get());
         System.out.println("serializedKeyset: " + serializedKeyset);
     }
 
